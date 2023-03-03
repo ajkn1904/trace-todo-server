@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 const app = express();
@@ -38,6 +38,35 @@ async function run() {
             const reqEmail = req.query.email;
             const query = { email: reqEmail }
             const result = await tasksCollection.find(query).sort({ _id: -1 }).toArray()
+            res.send(result)
+        })
+
+
+
+        app.put('/task/complete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const option = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    isCompleted: true
+                }
+            }
+            const result = await tasksCollection.updateOne(query, updatedDoc, option)
+            res.send(result)
+        })
+        
+        
+        app.put('/task/notComplete/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const option = { upsert: true }
+            const updatedDoc = {
+                $set: {
+                    isCompleted: false
+                }
+            }
+            const result = await tasksCollection.updateOne(query, updatedDoc, option)
             res.send(result)
         })
 
