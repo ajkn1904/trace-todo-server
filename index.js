@@ -18,8 +18,26 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 
-const usersCollection = client.db("traceTodo").collection("user");
-const taskCollection = client.db("traceTodo").collection("tasks");
+const usersCollection = client.db("traceTodo").collection("users");
+const tasksCollection = client.db("traceTodo").collection("tasks");
+
+
+async function run() {
+    try{
+
+
+        app.post('/users', async (req, res) => {
+            const users = req.body
+            const result = await usersCollection.insertOne(users)
+            res.send(result)
+
+        });
+
+
+    }
+    finally{}
+}
+run().catch(console.log())
 
 
 
